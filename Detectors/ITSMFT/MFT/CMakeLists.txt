@@ -1,9 +1,9 @@
 # **************************************************************************
 # * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
-# *                                                                        *
+# * *
 # * Author: The ALICE Off-line Project.                                    *
 # * Contributors are mentioned in the code where appropriate.              *
-# *                                                                        *
+# * *
 # * Permission to use, copy, modify and distribute this software and its   *
 # * documentation strictly for non-commercial purposes is hereby granted   *
 # * without fee, provided that the above copyright notice appears in all   *
@@ -17,5 +17,6 @@
 add_subdirectory(base)
 add_subdirectory(simulation)
 add_subdirectory(reconstruction)
+add_subdirectory(macros/test)
 
-install(DIRECTORY data DESTINATION share/Detectors/Geometry/MFT/)
+o2_data_file(COPY data DESTINATION Detectors/Geometry/MFT/)

@@ -1,11 +1,6 @@
-add_subdirectory(MathUtils)
 add_subdirectory(Field)
-add_subdirectory(SimConfig)
-add_subdirectory(Constants)
 add_subdirectory(Types)
 add_subdirectory(Utils)
+add_subdirectory(SimConfig)
 
-install(
-    DIRECTORY maps
-    DESTINATION share/Common/
-)
+o2_data_file(COPY maps DESTINATION Common)
