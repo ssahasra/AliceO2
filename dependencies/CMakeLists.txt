@@ -56,6 +56,7 @@ find_package(Monitoring REQUIRED)
 find_package(Common REQUIRED)
 find_package(RapidJSON MODULE REQUIRED)
 find_package(CURL REQUIRED)
+find_package(fmt REQUIRED)
 
 # MC specific packages
 if(BUILD_SIMULATION)

@@ -10,10 +10,8 @@
 
 o2_add_library(FrameworkLogger
                SOURCES src/Logger.cxx
-               PUBLIC_LINK_LIBRARIES FairLogger::FairLogger) # FIXME: should be
-                                                             # changed to {fmt}
-                                                             # once we have that
-                                                             # as a dependency
+               PUBLIC_LINK_LIBRARIES fmt::fmt FairLogger::FairLogger)
+# FIXME: should be changed to {fmt} once we have that as a dependency
 
 o2_add_test(Logger
             SOURCES test/unittest_Logger.cxx

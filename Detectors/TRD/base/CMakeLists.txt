@@ -7,15 +7,11 @@ o2_add_library(TRDBase
                        src/TRDSimParam.cxx
                        src/PadResponse.cxx
                        src/Digit.cxx
-                       src/TRDArrayADC.cxx
-                       src/TRDArrayDictionary.cxx
-                       src/TRDArraySignal.cxx
                        src/TRDCalPadStatus.cxx
                        src/TRDCalSingleChamberStatus.cxx
                        src/CalDet.cxx
                        src/CalROC.cxx
                        src/TRDFeeParam.cxx
-                       src/TRDSignalIndex.cxx
                PUBLIC_LINK_LIBRARIES O2::GPUCommon
                                      O2::DetectorsCommonDataFormats O2::Field
                                      O2::DetectorsBase ROOT::Physics)
@@ -29,16 +25,11 @@ o2_target_root_dictionary(TRDBase
                                   include/TRDBase/TRDCommonParam.h
                                   include/TRDBase/PadResponse.h
                                   include/TRDBase/Digit.h
-                                  include/TRDBase/TRDDigitsParam.h
-                                  include/TRDBase/TRDArrayADC.h
-                                  include/TRDBase/TRDArrayDictionary.h
-                                  include/TRDBase/TRDArraySignal.h
                                   include/TRDBase/TRDCalPadStatus.h
                                   include/TRDBase/TRDCalSingleChamberStatus.h
                                   include/TRDBase/CalDet.h
                                   include/TRDBase/CalROC.h
-                                  include/TRDBase/TRDFeeParam.h
-                                  include/TRDBase/TRDSignalIndex.h)
+                                  include/TRDBase/TRDFeeParam.h)
 
 o2_add_test(DiffusionCoefficient
             SOURCES test/testTRDDiffusionCoefficient.cxx

@@ -12,6 +12,10 @@ o2_add_library(MIDSimulation
                        src/Materials.cxx
                        src/MCLabel.cxx
                        src/Stepper.cxx
+                       src/ClusterLabeler.cxx
+                       src/PreClusterLabeler.cxx
+                       src/TrackLabeler.cxx
+                       src/MCClusterLabel.cxx
                PUBLIC_LINK_LIBRARIES O2::MIDBase O2::CommonDataFormat
                                      O2::DetectorsBase O2::SimulationDataFormat
                                      O2::MIDClustering)
@@ -29,11 +33,13 @@ o2_target_root_dictionary(
           include/MIDSimulation/DigitsPacker.h
           include/MIDSimulation/Hit.h
           include/MIDSimulation/MCLabel.h
-          include/MIDSimulation/Stepper.h)
+          include/MIDSimulation/Stepper.h
+          include/MIDSimulation/ClusterLabeler.h
+          include/MIDSimulation/PreClusterLabeler.h
+          include/MIDSimulation/TrackLabeler.h
+          include/MIDSimulation/MCClusterLabel.h)
 
 if(BUILD_TESTING)
-  add_subdirectory(test)
-
   o2_add_test_root_macro(macros/drawMIDGeometry.C
                          PUBLIC_LINK_LIBRARIES FairRoot::Base DetectorsPassive
                                                MIDSimulation

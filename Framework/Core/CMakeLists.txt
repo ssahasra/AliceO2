@@ -82,6 +82,7 @@ o2_add_library(Framework
                                      FairRoot::Base
                                      O2::CommonUtils
                                      O2::FrameworkFoundation
+                                     O2::FrameworkLogger
                                      O2::Headers
                                      O2::MemoryResources
                                      O2::PCG

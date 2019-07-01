@@ -1,19 +1,11 @@
 o2_add_test(Geometry
-            SOURCES
-            testGeometry.cxx
-            PUBLIC_LINK_LIBRARIES
-            O2::MIDSimulation
-            COMPONENT_NAME
-            mid
-            LABELS
-            mid)
+            SOURCES testGeometry.cxx
+            PUBLIC_LINK_LIBRARIES O2::MIDSimulation
+            COMPONENT_NAME mid
+            LABELS mid)
 
 o2_add_test(Simulation
-            SOURCES
-            testSimulation.cxx
-            PUBLIC_LINK_LIBRARIES
-            O2::MIDSimulation
-            COMPONENT_NAME
-            mid
-            LABELS
-            "mid;slow")
+            SOURCES testSimulation.cxx
+            PUBLIC_LINK_LIBRARIES O2::MIDSimulation O2::MIDTracking
+            COMPONENT_NAME mid
+            LABELS "mid;slow")
