@@ -6,15 +6,12 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 # C++ as we _do_ have some C files to compile explicitely as C (e.g. gl3w.c)
 project(O2 LANGUAGES C CXX VERSION 1.2.0)
 
-if(ENABLE_CUDA)
-  enable_language(CUDA)
-  set(CMAKE_CUDA_STANDARD 14)
-  set(CMAKE_CUDA_STANDARD_REQUIRED TRUE)
-endif()
-
 include(CTest)
 
 # Project wide setup
+
+# Would better fit inside GPU/CMakeLists.txt, but include GPU/Common directly
+set(ALIGPU_BUILD_TYPE "O2")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 set_property(GLOBAL PROPERTY REPORT_UNDEFINED_PROPERTIES)
@@ -36,6 +33,7 @@ o2_define_rpath()
 
 # External dependencies
 include(dependencies/CMakeLists.txt)
+include(GPU/cmake/FindGPU.cmake)
 
 # include macros and functions that are used in the following subdirectories'
 # CMakeLists.txt

@@ -25,7 +25,7 @@ o2_target_root_dictionary(ITStracking
                                   include/ITStracking/Tracklet.h
                           LINKDEF src/TrackingLinkDef.h)
 
-if(ENABLE_CUDA)
+if(CUDA_ENABLED)
   add_subdirectory(cuda)
+  target_compile_definitions(${targetName} PRIVATE CUDA_ENABLED)
 endif()
-

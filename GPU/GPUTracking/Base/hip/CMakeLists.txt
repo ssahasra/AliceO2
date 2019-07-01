@@ -1,41 +1,67 @@
-if(NOT DEFINED HIP_PATH)
-  if(NOT DEFINED ENV{HIP_PATH})
-    set(HIP_PATH "/opt/rocm/hip" CACHE PATH "Path to which HIP has been
-installed")
-  else()
-    set(HIP_PATH $ENV{HIP_PATH} CACHE PATH "Path to which HIP
-has been installed")
-  endif()
-endif()
-
-if(NOT EXISTS ${HIP_PATH})
-        message(FATAL_ERROR "HIP requested but HIP_PATH=${HIP_PATH} does not exist")
-endif()
-
-set(hip_ROOT ${HIP_PATH})
-get_filename_component(hcc_ROOT ${hip_ROOT}/../hcc ABSOLUTE)
-
-find_package(hip REQUIRED)
+set(MODULE GPUTrackingHIP)
 
 set(CMAKE_CXX_COMPILER ${hip_HIPCC_EXECUTABLE})
 
 message(STATUS "Building GPUTracking with HIP support")
 
-o2_add_library(
-  GPUTrackingHIP
-  SOURCES GPUReconstructionHIP.hip.cpp
-  PUBLIC_LINK_LIBRARIES O2::GPUTracking hip::host hip::device
-  PUBLIC_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/Detectors/TRD/base/src
-                             ${CMAKE_SOURCE_DIR}/Detectors/Base/src
-  TARGETVARNAME targetName)
+set(SRCS GPUReconstructionHIP.hip.cpp)
+set(HDRS GPUReconstructionHIP.h GPUReconstructionHIPInternals.h)
+
+if(ALIGPU_BUILD_TYPE STREQUAL "O2")
+  o2_add_library(
+    ${MODULE}
+    SOURCES ${SRCS}
+    PUBLIC_LINK_LIBRARIES O2::GPUTracking hip::host hip::device
+    PUBLIC_INCLUDE_DIRECTORIES ${CMAKE_SOURCE_DIR}/Detectors/TRD/base/src
+                               ${CMAKE_SOURCE_DIR}/Detectors/Base/src
+    TARGETVARNAME targetName)
+
+  target_compile_definitions(
+    ${targetName} PUBLIC GPUCA_GPULIBRARY=HIP
+    $<TARGET_PROPERTY:O2::GPUTracking,COMPILE_DEFINITIONS>)
+
+  install(FILES ${HDRS} DESTINATION include/GPU)
+endif()
+
+if(ALIGPU_BUILD_TYPE STREQUAL "ALIROOT")
+  add_definitions(-DGPUCA_GPULIBRARY=HIP)
+
+  # Generate the dictionary
+  get_directory_property(incdirs INCLUDE_DIRECTORIES)
+  generate_dictionary("Ali${MODULE}" "" "GPUReconstructionHIP.h" "${incdirs} .")
+
+  # Generate the ROOT map Dependecies
+  generate_rootmap("Ali${MODULE}" "" "")
+
+  # Add a library to the project using the specified source files
+  add_library_tested(Ali${MODULE} SHARED ${SRCS} G__Ali${MODULE}.cxx)
+  # HIP run-time and driver
+  target_link_libraries(Ali${MODULE} AliGPUTracking)
+
+  # Additional compilation flags
+  set_target_properties(Ali${MODULE} PROPERTIES COMPILE_FLAGS "")
+
+  # Installation
+  install(TARGETS Ali${MODULE} ARCHIVE DESTINATION lib LIBRARY DESTINATION lib)
+
+  install(FILES ${HDRS} DESTINATION include)
+  set(targetName "Ali${MODULE}")
+endif()
+
+if(ALIGPU_BUILD_TYPE STREQUAL "Standalone")
+  add_definitions(-DGPUCA_GPULIBRARY=HIP)
+  add_library(${MODULE} SHARED ${SRCS})
+  set(targetName "${MODULE}")
+  install(TARGETS GPUTrackingHIP)
+endif()
+
+if(HIP_AMDGPUTARGET)
+  target_link_options(${targetName} PUBLIC
+                      --amdgpu-target=${HIP_AMDGPUTARGET})
+endif()
 
 target_compile_options(${targetName}
-                       PUBLIC --amdgpu-target=gfx906
-                              -Wno-unused-command-line-argument
-                              -Wno-invalid-constexpr)
-
-target_compile_definitions(
-        ${targetName} PUBLIC ENABLE_HIP GPUCA_GPULIBRARY=HIP ENABLE_HIP
-  $<TARGET_PROPERTY:O2::GPUTracking,COMPILE_DEFINITIONS>)
-
-target_link_options(${targetName} PUBLIC --amdgpu-target=gfx906)
+                       PUBLIC -Wno-unused-command-line-argument
+                              -Wno-invalid-constexpr
+                              -Wno-ignored-optimization-argument
+                              -Wno-unused-private-field)

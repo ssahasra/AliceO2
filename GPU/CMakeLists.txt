@@ -1,22 +1,17 @@
-# **************************************************************************
-# * Copyright(c) 1998-2014, ALICE Experiment at CERN, All rights reserved. *
-# *                                                                        *
-# * Author: The ALICE Off-line Project.                                    *
-# * Contributors are mentioned in the code where appropriate.              *
-# *                                                                        *
-# * Permission to use, copy, modify and distribute this software and its   *
-# * documentation strictly for non-commercial purposes is hereby granted   *
-# * without fee, provided that the above copyright notice appears in all   *
-# * copies and that both the copyright notice and this permission notice   *
-# * appear in the supporting documentation. The authors make no claims     *
-# * about the suitability of this software for any purpose. It is          *
-# * provided "as is" without express or implied warranty.                  *
-# **************************************************************************
+# Subdirectories will be compiled with O2 / AliRoot / Standalone To simplify the
+# CMake, variables are defined for Sources / Headers first. Then, the actual
+# CMake build scripts use these variables.
+#
+# SRCS: Common Sources for all builds HDRS_CINT: Headers for ROOT dictionary
+# (always) HDRS_CINT_ALIROOT: Headers for ROOT dictionary (only in AliRoot)
+# HDRS_CINT_O2: Headers for ROOT dictionary (only for O2) HDRS_INSTALL: Headers
+# for installation only
 
-option(ENABLE_CUDA   "Build GPU tracker using CUDA"   OFF)
-option(ENABLE_OPENCL "Build GPU tracker using OpenCL" OFF)
-option(ENABLE_HIP    "Build GPU tracker using HIP"    OFF)
-
+if(NOT ALIGPU_BUILD_TYPE STREQUAL "O2")
+  add_subdirectory(Common)
+endif()
 add_subdirectory(TPCFastTransformation)
 add_subdirectory(GPUTracking)
-add_subdirectory(TPCSpaceChargeBase)
+if(NOT ALIGPU_BUILD_TYPE STREQUAL "Standalone")
+  add_subdirectory(TPCSpaceChargeBase)
+endif()

@@ -13,3 +13,6 @@ o2_add_library(ITStrackingCUDA
                TARGETVARNAME targetName)
 
 set_property(TARGET ${targetName} PROPERTY CUDA_SEPARABLE_COMPILATION ON)
+
+target_compile_definitions(
+  ${targetName} PRIVATE $<TARGET_PROPERTY:O2::ITStracking,COMPILE_DEFINITIONS>)
