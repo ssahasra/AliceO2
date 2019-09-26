@@ -79,9 +79,11 @@ if(HIP_AMDGPUTARGET)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --amdgpu-target=${HIP_AMDGPUTARGET}")
 endif()
 
+target_link_options(${targetName} PUBLIC -finline-hint-functions)
 target_compile_options(${targetName}
                        PUBLIC -Wno-invalid-command-line-argument
                               -Wno-unused-command-line-argument
                               -Wno-invalid-constexpr
                               -Wno-ignored-optimization-argument
-                              -Wno-unused-private-field)
+                              -Wno-unused-private-field
+                              -finline-hint-functions)

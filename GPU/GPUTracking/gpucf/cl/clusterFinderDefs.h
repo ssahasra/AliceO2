@@ -28,7 +28,7 @@ typedef unsigned long ulong;
 #define SCRATCH_PAD_WORK_GROUP_SIZE GPUCA_THREAD_COUNT_CLUSTERER
 #define BUILD_CLUSTER_NAIVE
 #ifdef GPUCA_GPUCODE
-#define BUILD_CLUSTER_SCRATCH_PAD
+//#define BUILD_CLUSTER_SCRATCH_PAD // Result not fully correct when I enable this
 #endif
 #define DCHARGEMAP_TIME_MAJOR_LAYOUT
 #endif
