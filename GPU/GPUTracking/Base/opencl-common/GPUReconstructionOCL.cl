@@ -11,6 +11,8 @@
 /// \file GPUReconstructionOCL.cl
 /// \author David Rohr
 
+#ifndef __OPENCLCPP__
+
 // clang-format off
 #define __OPENCL__
 #define GPUCA_GPUTYPE_RADEON
@@ -78,3 +80,5 @@
 #undef GPUCA_OPENCL1
 #undef GPUCA_KRNL_LOAD_single
 #undef GPUCA_KRNL_LOAD_multi
+
+#endif
