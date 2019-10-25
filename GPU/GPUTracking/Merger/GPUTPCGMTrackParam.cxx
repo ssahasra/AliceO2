@@ -171,12 +171,16 @@ GPUd() bool GPUTPCGMTrackParam::Fit(const GPUTPCGMMerger* merger, int iTrk, GPUT
       if (allowModification && changeDirection && !noFollowCircle && !noFollowCircle2) {
         const GPUTPCGMTrackParam backup = *this;
         const float backupAlpha = prop.GetAlpha();
+        merger->GetConstantMem()->debugOutput.Add(iTrk, -100);
+        merger->GetConstantMem()->debugOutput.Add(iTrk, lastRow);
         if (lastRow != 255 && FollowCircle(merger, prop, lastSlice, lastRow, iTrk, clusters[ihit].leg == clusters[maxN - 1].leg, clAlpha, xx, yy, clusters[ihit].slice, clusters[ihit].row, inFlyDirection)) {
+          merger->GetConstantMem()->debugOutput.Add(iTrk, 11);
           CADEBUG(printf("Error during follow circle, resetting track!\n"));
           *this = backup;
           prop.SetTrack(this, backupAlpha);
           noFollowCircle = true;
         } else {
+          merger->GetConstantMem()->debugOutput.Add(iTrk, 22);
           MirrorTo(prop, yy, zz, inFlyDirection, param, clusters[ihit].row, clusterState, false);
           lastUpdateX = mX;
           lastLeg = clusters[ihit].leg;
@@ -227,6 +231,7 @@ GPUd() bool GPUTPCGMTrackParam::Fit(const GPUTPCGMMerger* merger, int iTrk, GPUT
         if (CAMath::Abs(yy - mP[0]) > CAMath::Abs(yy - mirrordY)) {
           CADEBUG(printf(" - Mirroring!!!"));
           if (allowModification) {
+            merger->GetConstantMem()->debugOutput.Add(iTrk, 3);
             AttachClustersMirror(merger, clusters[ihit].slice, clusters[ihit].row, iTrk, yy, prop); // Never true, will always call FollowCircle above
           }
           MirrorTo(prop, yy, zz, inFlyDirection, param, clusters[ihit].row, clusterState, true);
@@ -533,6 +538,7 @@ GPUd() bool GPUTPCGMTrackParam::FollowCircleChk(float lrFactor, float toY, float
 GPUd() int GPUTPCGMTrackParam::FollowCircle(const GPUTPCGMMerger* Merger, GPUTPCGMPropagator& prop, int slice, int iRow, int iTrack, bool goodLeg, float toAlpha, float toX, float toY, int toSlice, int toRow, bool inFlyDirection)
 {
   if (Merger->Param().rec.DisableRefitAttachment & 4) {
+    Merger->GetConstantMem()->debugOutput.Add(iTrack, -1);
     return 1;
   }
   const GPUParam& param = Merger->Param();
@@ -552,6 +558,7 @@ GPUd() int GPUTPCGMTrackParam::FollowCircle(const GPUTPCGMMerger* Merger, GPUTPC
 
   AttachClustersPropagate(Merger, slice, iRow, targetRow, iTrack, goodLeg, prop, inFlyDirection, 0.7f);
   if (prop.RotateToAlpha(prop.GetAlpha() + (M_PI / 2.f) * lrFactor)) {
+    Merger->GetConstantMem()->debugOutput.Add(iTrack, -2);
     return 1;
   }
   CADEBUG(printf("Rotated: X %f Y %f Z %f SinPhi %f (Alpha %f / %f)\n", mP[0], mX, mP[1], mP[2], prop.GetAlpha(), prop.GetAlpha() + M_PI / 2.f));
@@ -561,6 +568,7 @@ GPUd() int GPUTPCGMTrackParam::FollowCircle(const GPUTPCGMMerger* Merger, GPUTPC
       if (err) {
         CADEBUG(printf("propagation error (%d)\n", err));
         prop.RotateToAlpha(prop.GetAlpha() - (M_PI / 2.f) * lrFactor);
+        Merger->GetConstantMem()->debugOutput.Add(iTrack, -3);
         return 1;
       }
       CADEBUG(printf("Propagated to y = %f: X %f Z %f SinPhi %f\n", mX, mP[0], mP[1], mP[2]));
@@ -589,6 +597,7 @@ GPUd() int GPUTPCGMTrackParam::FollowCircle(const GPUTPCGMMerger* Merger, GPUTPC
       if (prop.RotateToAlpha(param.Alpha(slice) + (M_PI / 2.f) * lrFactor)) {
         CADEBUG(printf("rotation error\n"));
         prop.RotateToAlpha(prop.GetAlpha() - (M_PI / 2.f) * lrFactor);
+        Merger->GetConstantMem()->debugOutput.Add(iTrack, -4);
         return 1;
       }
       CADEBUG(printf("After Rotatin Alpha %f Position X %f Y %f Z %f SinPhi %f\n", prop.GetAlpha(), mP[0], mX, mP[1], mP[2]));
@@ -601,6 +610,7 @@ GPUd() int GPUTPCGMTrackParam::FollowCircle(const GPUTPCGMMerger* Merger, GPUTPC
     }
     if (i) {
       CADEBUG(printf("Final rotation failed\n"));
+      Merger->GetConstantMem()->debugOutput.Add(iTrack, -5);
       return 1;
     }
     CADEBUG(printf("resetting physical model\n"));

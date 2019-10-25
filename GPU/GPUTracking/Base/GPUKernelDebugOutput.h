@@ -71,7 +71,7 @@ class GPUKernelDebugOutput : public GPUProcessor
   }
 
  private:
-  int* mDebugOutMemory;
+  mutable int* mDebugOutMemory;
 };
 
 } // namespace gpu

@@ -203,7 +203,6 @@ void* GPUTPCGMMerger::SetPointersGPURefit(void* mem)
   computePointerWithAlignment(mem, mClusters, mNMaxOutputTrackClusters);
   computePointerWithAlignment(mem, mTrackOrder, mNMaxTracks);
   computePointerWithAlignment(mem, mClusterAttachment, mNMaxClusters);
-
   return mem;
 }
 

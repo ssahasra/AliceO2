@@ -21,10 +21,12 @@ using namespace GPUCA_NAMESPACE::gpu;
 template <>
 GPUd() void GPUTPCGMMergerTrackFit::Thread<0>(int nBlocks, int nThreads, int iBlock, int iThread, GPUsharedref() GPUTPCSharedMemory& smem, processorType& merger)
 {
+  if (get_global_id(0))
+    return;
 #if defined(GPUCA_HAVE_OPENMP) && !defined(GPUCA_GPUCODE)
 #pragma omp parallel for num_threads(merger.GetRec().GetDeviceProcessingSettings().nThreads)
 #endif
-  for (int i = get_global_id(0); i < merger.NOutputTracks(); i += get_global_size(0)) {
+  for (int i = 0; i < merger.NOutputTracks(); i += 1) {
     GPUTPCGMTrackParam::RefitTrack(merger.OutputTracks()[i], i, &merger, merger.Clusters());
   }
 }
