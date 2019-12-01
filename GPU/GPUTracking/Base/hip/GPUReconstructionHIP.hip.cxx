@@ -11,6 +11,8 @@
 /// \file GPUReconstructionHIP.hip.cxx
 /// \author David Rohr
 
+#if 0
+
 #define GPUCA_GPUTYPE_HIP
 #include <hip/hip_runtime.h>
 
@@ -490,3 +492,5 @@ void GPUReconstructionHIPBackend::SetThreadCounts()
   mClustererThreadCount = GPUCA_THREAD_COUNT_CLUSTERER;
   mScanThreadCount = GPUCA_THREAD_COUNT_SCAN;
 }
+
+#endif

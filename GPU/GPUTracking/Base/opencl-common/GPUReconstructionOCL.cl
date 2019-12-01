@@ -15,6 +15,8 @@
 #define __OPENCL__
 #define GPUCA_GPUTYPE_RADEON
 
+#ifndef __OPENCLCPP__
+
 #ifdef __OPENCLCPP__
   #pragma OPENCL EXTENSION cl_khr_fp64 : enable
   #ifdef __clang__
@@ -78,4 +80,5 @@
 #undef GPUCA_KRNL_LOAD_single
 #undef GPUCA_KRNL_LOAD_multi
 
+#endif
 // clang-format on
